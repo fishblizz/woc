@@ -2,6 +2,7 @@
 wow-server/.env
 wow-client-3.3.5a/
 wow-client-3.3.5a_installer/
+wow-client-335a/
 wow-server/backups/*
 !wow-server/backups/.gitkeep
 wow-server/volumes/

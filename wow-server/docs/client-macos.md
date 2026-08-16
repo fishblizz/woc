@@ -1,6 +1,6 @@
 # macOS clientroute voor WoW 3.3.5a
 
-Status op 2026-08-16: **INSTALLER ROUTE FAILED / CLIENT REQUIRED**.
+Status op 2026-08-16: **CLIENT VALIDATED / READY FOR RUNTIME TEST**.
 
 Deze notitie documenteert de gecontroleerde stand voor het lokaal starten van
 een WoW WotLK 3.3.5a Windows-client op Apple Silicon tegen deze AzerothCore
@@ -10,8 +10,8 @@ clientdownloads gezocht, gedownload of gedistribueerd.
 ## Servercontext
 
 - Serverproject: `/Users/ceesvisser/WOC/wow-server`
-- Installerpad dat is geinspecteerd: `/Users/ceesvisser/WOC/wow-client-3.3.5a`
-- Beoogde installatiemap: `/Users/ceesvisser/WOC/wow-client-installed-3.3.5a`
+- Mislukt installerpad: `/Users/ceesvisser/WOC/wow-client-3.3.5a`
+- Geldige clientmap: `/Users/ceesvisser/WOC/wow-client-335a`
 - Sikarugir wrapper: `/Users/ceesvisser/Applications/Sikarugir/WoW-335a-Installer.app`
 - AzerothCore authserver: `192.168.178.129:3724`
 - AzerothCore worldserver: `192.168.178.129:8085`
@@ -26,7 +26,30 @@ Vereist:
 World of Warcraft Wrath of the Lich King 3.3.5a - build 12340
 ```
 
-Resultaat van de mapinspectie:
+Resultaat van de actuele clientinspectie:
+
+```text
+CLIENT VALIDATED
+```
+
+Bevindingen:
+
+- `wow.exe` is aanwezig.
+- `Data/` is aanwezig.
+- `Data/enUS/realmlist.wtf` is aanwezig.
+- Bekende WotLK MPQ-data is aanwezig, waaronder `common.MPQ`,
+  `expansion.MPQ`, `lichking.MPQ`, `patch.MPQ`, `patch-2.MPQ`,
+  `patch-3.MPQ` en locale-bestanden onder `Data/enUS`.
+- `wow.exe` is een PE32 Windows GUI executable voor Intel 80386.
+- Buildstring in `wow.exe`: `World of WarCraft (build 12340)`.
+- Versiestring in `wow.exe`: `3.3.5`.
+- Mapgrootte: ongeveer `26G`.
+- Locale: `enUS`.
+
+De map `/Users/ceesvisser/WOC/wow-client-335a/` staat in `.gitignore` en mag
+niet naar Git worden gecommit.
+
+Resultaat van de eerdere installer-mapinspectie:
 
 ```text
 CLIENT INVALID
@@ -89,15 +112,29 @@ niet globaal aangepast, en er zijn geen quarantine-attributen verwijderd.
 
 ## Realmlist
 
-Niet gewijzigd, omdat er geen `realmlist.wtf` aanwezig is.
-
-Wanneer een geldige clientmap aanwezig is, configureer:
+Gewijzigd in de geldige clientmap:
 
 ```text
-set realmlist 192.168.178.129
+/Users/ceesvisser/WOC/wow-client-335a/Data/enUS/realmlist.wtf
 ```
 
-Maak vooraf een backup van het originele `realmlist.wtf`.
+Originele backup:
+
+```text
+/Users/ceesvisser/WOC/wow-client-335a/Data/enUS/realmlist.wtf.original
+```
+
+Nieuwe inhoud:
+
+```text
+SET realmlist "192.168.178.129"
+```
+
+Servercontrole:
+
+- `ac-authserver`: healthy, hostpoort `3724`
+- `ac-worldserver`: healthy, hostpoort `8085`
+- Realm `AzerothCore`: `192.168.178.129:8085`
 
 ## Gratis Apple Silicon runtime
 
@@ -244,21 +281,13 @@ of overschreven worden.
 
 ## Volgende stap
 
-Ruim de installer-set en tijdelijke wrapper desgewenst op.
-
-Lever daarna een reeds volledig geinstalleerde, legitiem verkregen WotLK
-3.3.5a build 12340 clientmap aan met minimaal:
+Configureer een Wine-wrapper voor:
 
 ```text
-Wow.exe
-Data/
-Data/realmlist.wtf
+C:\Program Files\wow-client-335a\wow.exe
 ```
 
-Daarna opnieuw valideren en pas dan `realmlist.wtf` wijzigen:
+Daarna uitvoeren:
 
-- build `3.3.5a 12340`
-- locale
-- MPQ/clientdata
-- realmlist-backup en configuratie
 - eerste login op `CEES` met handmatig ingevoerd wachtwoord
+- grafische/runtime-test op Apple Silicon
