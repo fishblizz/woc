@@ -1,0 +1,7 @@
+.env
+wow-server/.env
+wow-server/backups/*
+!wow-server/backups/.gitkeep
+wow-server/volumes/
+*.log
+.DS_Store
