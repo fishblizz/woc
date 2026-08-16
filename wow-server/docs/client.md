@@ -28,3 +28,4 @@ Start de client bij voorkeur direct via `Wow.exe`, niet via een launcher die pat
 4. Start de client.
 5. Log in met je AzerothCore-account.
 
+Gebruik een accountwachtwoord van maximaal 16 tekens. Langere accountwachtwoorden worden door AzerothCore geweigerd vanwege de 3.3.5a client-limiet.

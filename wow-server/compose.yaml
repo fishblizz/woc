@@ -7,6 +7,7 @@ services:
   ac-database:
     container_name: woc-ac-database
     image: mysql:8.4
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
     restart: unless-stopped
     networks:
       - ac-network
@@ -25,6 +26,7 @@ services:
   ac-client-data-init:
     container_name: woc-ac-client-data-init
     image: acore/ac-wotlk-client-data:${DOCKER_IMAGE_TAG:-master}
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
     networks:
       - ac-network
     volumes:
@@ -35,6 +37,7 @@ services:
   ac-db-import:
     container_name: woc-ac-db-import
     image: acore/ac-wotlk-db-import:${DOCKER_IMAGE_TAG:-master}
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
     restart: "no"
     networks:
       - ac-network
@@ -59,6 +62,7 @@ services:
   ac-authserver:
     container_name: woc-ac-authserver
     image: acore/ac-wotlk-authserver:${DOCKER_IMAGE_TAG:-master}
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
     restart: unless-stopped
     networks:
       - ac-network
@@ -86,6 +90,7 @@ services:
   ac-worldserver:
     container_name: woc-ac-worldserver
     image: acore/ac-wotlk-worldserver:${DOCKER_IMAGE_TAG:-master}
+    platform: ${DOCKER_PLATFORM:-linux/amd64}
     restart: unless-stopped
     networks:
       - ac-network

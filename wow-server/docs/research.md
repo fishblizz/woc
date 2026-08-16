@@ -25,7 +25,7 @@ De Synology DS218+ is technisch geschikt voor een kleine LAN-only AzerothCore Wo
 
 1. **Image-architectuur**
 
-   De officiële `acore/ac-wotlk-worldserver` Docker Hub tags tonen `linux/amd64`. De DS218+ heeft een Intel Celeron J3355 en is x86-64, dus de prebuilt images passen qua CPU-architectuur.
+   De officiële `acore/ac-wotlk-worldserver` Docker Hub tags tonen `linux/amd64`. De DS218+ heeft een Intel Celeron J3355 en is x86-64, dus de prebuilt images passen qua CPU-architectuur. De Compose-config zet dit expliciet via `DOCKER_PLATFORM=linux/amd64`; op de DS218+ draait dit native, op Apple Silicon lokaal via Docker-emulatie.
 
 2. **Docker en Compose**
 
@@ -86,4 +86,3 @@ De Synology DS218+ is technisch geschikt voor een kleine LAN-only AzerothCore Wo
 9. **PlayerBots**
 
    De actuele aanbevolen voortzetting is `mod-playerbots/mod-playerbots`. Deze vereist een custom Playerbot branch van AzerothCore en zelf bouwen; Docker-installatie wordt door de module zelf als experimenteel/onofficieel met beperkte support beschreven. Op een J3355 is dit alleen realistisch met zeer weinig bots. Begin later met 1-3 bots, meet CPU/RAM, en zet random/autologin bots uit of laag.
-

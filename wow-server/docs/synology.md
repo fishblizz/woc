@@ -65,6 +65,7 @@ Pas minimaal aan:
 ```sh
 LAN_IP=192.168.x.x
 DOCKER_DB_ROOT_PASSWORD=een-lang-willekeurig-wachtwoord
+DOCKER_PLATFORM=linux/amd64
 ```
 
 Gebruik het LAN-IP van de Synology. Gebruik niet `localhost` vanaf een andere computer.
@@ -121,6 +122,8 @@ Daarna in de console:
 account create gebruikersnaam wachtwoord
 account set addon gebruikersnaam 2
 ```
+
+Gebruik een accountwachtwoord van maximaal 16 tekens. AzerothCore weigert langere wachtwoorden omdat de 3.3.5a client die niet ondersteunt.
 
 GM/admin maken:
 
@@ -195,4 +198,3 @@ Config backup:
 ```
 
 Je kunt de map `/volume1/docker/woc/wow-server/backups` laten meenemen door Hyper Backup.
-

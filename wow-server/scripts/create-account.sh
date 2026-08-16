@@ -3,13 +3,19 @@ set -eu
 
 if [ "$#" -ne 2 ]; then
   echo "Usage: ./scripts/create-account.sh <username> <password>"
+  echo "AzerothCore/WoW 3.3.5a account passwords must be 16 characters or shorter."
+  exit 1
+fi
+
+if [ "${#2}" -gt 16 ]; then
+  echo "Password is too long. AzerothCore/WoW 3.3.5a account passwords must be 16 characters or shorter."
   exit 1
 fi
 
 cat <<MSG
 Open the worldserver console and run:
 
-  account create $1 $2
+  account create $1 <the password you supplied>
   account set addon $1 2
 
 For a GM/admin account, also run:

@@ -36,6 +36,7 @@ Pas `.env` aan:
 ```text
 LAN_IP=192.168.x.x
 DOCKER_DB_ROOT_PASSWORD=een-lang-willekeurig-wachtwoord
+DOCKER_PLATFORM=linux/amd64
 ```
 
 Start:
@@ -83,6 +84,8 @@ account create gebruikersnaam wachtwoord
 account set addon gebruikersnaam 2
 ```
 
+Gebruik een accountwachtwoord van maximaal 16 tekens; de WoW 3.3.5a client accepteert geen langere accountwachtwoorden.
+
 Maak een GM/admin:
 
 ```text
@@ -122,4 +125,3 @@ Niet publiceren in fase 1:
 - [docs/synology.md](docs/synology.md)
 - [docs/client.md](docs/client.md)
 - [docs/playerbots.md](docs/playerbots.md)
-
