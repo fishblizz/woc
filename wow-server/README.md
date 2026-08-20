@@ -7,21 +7,25 @@ Status: **GO WITH LIMITATIONS** voor 1 speler en voorzichtig enkele vrienden. De
 ## Architectuur
 
 ```text
-WoW 3.3.5a client op LAN
+WoW 3.3.5a client + browser op LAN
         |
-        | TCP 3724 / 8085
+        | TCP 3724 / 8085 / 8090
         v
 Synology DS218+
         |
         +-- ac-authserver
         |
         +-- ac-worldserver
+        |     +-- mod-ah-bot
+        |     +-- mod-autobalance
         |
         +-- ac-database (MySQL 8.4)
-              |
-              +-- acore_auth
-              +-- acore_characters
-              +-- acore_world
+        |     |
+        |     +-- acore_auth
+        |     +-- acore_characters
+        |     +-- acore_world
+        |
+        +-- woc-portal (World of Cees)
 ```
 
 ## Eerste start
@@ -37,7 +41,12 @@ Pas `.env` aan:
 LAN_IP=192.168.x.x
 DOCKER_DB_ROOT_PASSWORD=een-lang-willekeurig-wachtwoord
 DOCKER_PLATFORM=linux/amd64
+DOCKER_WORLD_IMAGE=acore/ac-wotlk-worldserver:ahbot-autobalance
+DOCKER_WORLD_PLATFORM=linux/amd64
+PORTAL_EXTERNAL_PORT=8090
 ```
+
+Op Synology moet de custom worldserver-image `acore/ac-wotlk-worldserver:ahbot-autobalance` lokaal aanwezig zijn voordat je start. Zie [docs/synology.md](docs/synology.md).
 
 Start:
 
@@ -55,6 +64,12 @@ Logs:
 
 ```sh
 docker compose logs -f
+```
+
+Portal:
+
+```text
+http://<LAN_IP>:8090
 ```
 
 Stop:
@@ -113,6 +128,7 @@ Open alleen op LAN:
 
 - TCP `3724`: authserver
 - TCP `8085`: worldserver
+- TCP `8090`: World of Cees portal
 
 Niet publiceren in fase 1:
 

@@ -2,9 +2,16 @@
 wow-server/.env
 wow-client-3.3.5a/
 wow-client-3.3.5a_installer/
+wow-client/
 wow-client-335a/
+wow-client-dropzone/*
+!wow-client-dropzone/README.md
+vm/
+wow-server-ahbot/
 wow-server/backups/*
 !wow-server/backups/.gitkeep
+wow-server/portal-downloads/*
+!wow-server/portal-downloads/.gitkeep
 wow-server/volumes/
 *.log
 .DS_Store

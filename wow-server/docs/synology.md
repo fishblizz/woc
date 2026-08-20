@@ -38,6 +38,7 @@ De server schrijft runtime-data onder:
 /volume1/docker/woc/wow-server/volumes/mysql
 /volume1/docker/woc/wow-server/volumes/client-data
 /volume1/docker/woc/wow-server/backups
+/volume1/docker/woc/wow-server/portal-downloads
 ```
 
 ## 3. Rechten
@@ -46,7 +47,7 @@ Gebruik bij voorkeur je normale beheeruser die Docker/Container Manager mag gebr
 
 ```sh
 cd /volume1/docker/woc/wow-server
-mkdir -p volumes/mysql volumes/client-data backups
+mkdir -p volumes/mysql volumes/client-data backups portal-downloads
 ```
 
 Als Docker klaagt over rechten, controleer in DSM of je user rechten heeft op de gedeelde map waarin `/volume1/docker/woc` staat.
@@ -66,11 +67,37 @@ Pas minimaal aan:
 LAN_IP=192.168.x.x
 DOCKER_DB_ROOT_PASSWORD=een-lang-willekeurig-wachtwoord
 DOCKER_PLATFORM=linux/amd64
+DOCKER_WORLD_PLATFORM=linux/amd64
+DOCKER_WORLD_IMAGE=acore/ac-wotlk-worldserver:ahbot-autobalance
+PORTAL_EXTERNAL_PORT=8090
 ```
 
 Gebruik het LAN-IP van de Synology. Gebruik niet `localhost` vanaf een andere computer.
 
-## 5. Starten via SSH
+## 5. Custom worldserver-image
+
+De private server gebruikt een custom worldserver-image met AHBot en AutoBalance:
+
+```sh
+acore/ac-wotlk-worldserver:ahbot-autobalance
+```
+
+Die image moet op de Synology bestaan voordat je `docker compose up -d` draait. Als je hem op een andere machine bouwt, exporteer hem buiten git:
+
+```sh
+docker save acore/ac-wotlk-worldserver:ahbot-autobalance | gzip > ac-wotlk-worldserver-ahbot-autobalance-amd64.tar.gz
+```
+
+Kopieer dit bestand naar de Synology en laad hem daar:
+
+```sh
+gzip -dc ac-wotlk-worldserver-ahbot-autobalance-amd64.tar.gz | docker load
+docker image ls | grep ahbot-autobalance
+```
+
+Commit deze image-export niet. Het is deployment-materiaal, geen broncode.
+
+## 6. Starten via SSH
 
 Eerste start:
 
@@ -98,7 +125,23 @@ Stoppen:
 docker compose down
 ```
 
-## 6. Realmlist in database zetten
+## 7. Portal openen
+
+De interne World of Cees portal draait standaard op:
+
+```text
+http://<Synology-LAN-IP>:8090
+```
+
+De portal maakt accounts aan en toont downloads uit:
+
+```sh
+/volume1/docker/woc/wow-server/portal-downloads
+```
+
+Zet interne bestanden handmatig in die map. De inhoud wordt bewust niet in git meegenomen.
+
+## 8. Realmlist in database zetten
 
 Na de eerste database-import:
 
@@ -108,7 +151,7 @@ Na de eerste database-import:
 
 Dit zet `acore_auth.realmlist.address` op de `LAN_IP` uit `.env`.
 
-## 7. Account maken
+## 9. Account maken
 
 Open de worldserver console:
 
@@ -147,7 +190,7 @@ Account blokkeren:
 ban account gebruikersnaam -1 reden
 ```
 
-## 8. Automatisch starten na reboot
+## 10. Automatisch starten na reboot
 
 De containers hebben `restart: unless-stopped`. Na een normale NAS reboot starten ze opnieuw zodra Docker/Container Manager beschikbaar is.
 
@@ -159,12 +202,13 @@ Als je Container Manager Project gebruikt:
 4. Gebruik `compose.yaml`.
 5. Start het project.
 
-## 9. Firewall-poorten
+## 11. Firewall-poorten
 
 LAN-only openzetten op de Synology firewall:
 
 - TCP `3724`
 - TCP `8085`
+- TCP `8090`
 
 Niet openzetten:
 
@@ -173,11 +217,11 @@ Niet openzetten:
 
 Zet geen router port-forwarding aan voor fase 1.
 
-## 10. Internettoegang later
+## 12. Internettoegang later
 
 Voor toegang vanaf internet zijn minimaal router port-forwards voor TCP `3724` en `8085` nodig en moet de database-realmlist naar publiek IP of DNS wijzen. Dat is bewust niet de eerste versie. Gebruik sterke wachtwoorden en overweeg liever VPN naar je LAN.
 
-## 11. Backups
+## 13. Backups
 
 Database backup:
 

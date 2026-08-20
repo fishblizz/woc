@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="nl">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>World of Cees</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="kicker">Private AzerothCore Realm</p>
+          <h1>World of Cees</h1>
+          <p class="realm-line"><%= REALM_NAME %> draait intern op <strong><%= LAN_IP %>:<%= WORLD_PORT %></strong></p>
+        </div>
+        <div class="status-runes" aria-label="Realm status">
+          <div>
+            <span>Accounts</span>
+            <strong><%= status.accountCount %></strong>
+          </div>
+          <div>
+            <span>Chars</span>
+            <strong><%= status.characterCount %></strong>
+          </div>
+          <div>
+            <span>AH</span>
+            <strong><%= status.auctionCount %></strong>
+          </div>
+        </div>
+      </section>
+
+      <% if (flash) { %><p class="notice good"><%= flash %></p><% } %>
+      <% if (error) { %><p class="notice bad"><%= error %></p><% } %>
+
+      <section class="grid">
+        <article class="panel forge">
+          <div class="panel-head">
+            <p>Nieuwe speler</p>
+            <h2>Account smeden</h2>
+          </div>
+          <form method="post" action="/accounts" class="account-form">
+            <label>
+              Accountnaam
+              <input name="username" autocomplete="username" minlength="3" maxlength="32" required placeholder="CEESRAIDER">
+            </label>
+            <label>
+              Wachtwoord
+              <input name="password" type="password" autocomplete="new-password" minlength="4" maxlength="16" required placeholder="max 16 tekens">
+            </label>
+            <label>
+              E-mail
+              <input name="email" type="email" autocomplete="email" maxlength="255" placeholder="optioneel">
+            </label>
+            <button type="submit">Maak account</button>
+          </form>
+        </article>
+
+        <article class="panel realm">
+          <div class="panel-head">
+            <p>Realm</p>
+            <h2>Status</h2>
+          </div>
+          <div class="realm-list">
+            <% status.realms.forEach((realm) => { %>
+              <div class="realm-row">
+                <div>
+                  <strong><%= realm.name %></strong>
+                  <span><%= realm.address %>:<%= realm.port %></span>
+                </div>
+                <mark class="<%= Number(realm.flag) === 0 ? 'online' : 'offline' %>">
+                  <%= Number(realm.flag) === 0 ? 'Online' : 'Offline' %>
+                </mark>
+              </div>
+            <% }) %>
+            <% if (!status.realms.length) { %>
+              <p class="muted">Geen realmdata gevonden.</p>
+            <% } %>
+          </div>
+          <div class="connection">
+            <span>Realmlist</span>
+            <code>set realmlist <%= LAN_IP %></code>
+          </div>
+        </article>
+
+        <article class="panel downloads">
+          <div class="panel-head">
+            <p>Vault</p>
+            <h2>Downloads</h2>
+          </div>
+          <% if (downloads.length) { %>
+            <ul class="download-list">
+              <% downloads.forEach((file) => { %>
+                <li>
+                  <a href="<%= file.href %>"><%= file.name %></a>
+                  <span><%= formatBytes(file.size) %></span>
+                </li>
+              <% }) %>
+            </ul>
+          <% } else { %>
+            <p class="muted">Zet interne bestanden in <code>portal-downloads</code>; ze verschijnen hier automatisch.</p>
+          <% } %>
+        </article>
+
+        <article class="panel modules">
+          <div class="panel-head">
+            <p>Modules</p>
+            <h2>Actief</h2>
+          </div>
+          <div class="module-grid">
+            <span>AHBot</span>
+            <strong>Auction House gevuld</strong>
+            <span>AutoBalance</span>
+            <strong>Solo raids schalen mee</strong>
+            <span>Realm type</span>
+            <strong>PvP</strong>
+          </div>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>

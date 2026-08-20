@@ -89,8 +89,8 @@ services:
 
   ac-worldserver:
     container_name: woc-ac-worldserver
-    image: acore/ac-wotlk-worldserver:${DOCKER_IMAGE_TAG:-master}
-    platform: ${DOCKER_PLATFORM:-linux/amd64}
+    image: ${DOCKER_WORLD_IMAGE:-acore/ac-wotlk-worldserver:${DOCKER_IMAGE_TAG:-master}}
+    platform: ${DOCKER_WORLD_PLATFORM:-linux/amd64}
     restart: unless-stopped
     networks:
       - ac-network
@@ -108,12 +108,36 @@ services:
     environment:
       AC_DATA_DIR: "/azerothcore/env/dist/data"
       AC_LOGS_DIR: "/azerothcore/env/dist/logs"
+      AC_GAME_TYPE: "1"
+      AC_AUCTION_HOUSE_BOT_ENABLE_SELLER: "1"
+      AC_AUCTION_HOUSE_BOT_ENABLE_BUYER: "0"
+      AC_AUCTION_HOUSE_BOT_ACCOUNT: "2"
+      AC_AUCTION_HOUSE_BOT_GUID: "3"
+      AC_AUCTION_HOUSE_BOT_ITEMS_PER_CYCLE: "50"
+      AC_AUCTION_HOUSE_BOT_CONSIDER_ONLY_BOT_AUCTIONS: "1"
+      AC_AUCTION_HOUSE_BOT_PROFESSION_ITEMS: "1"
+      AC_AUTO_BALANCE_ENABLE_GLOBAL: "1"
+      AC_AUTO_BALANCE_MIN_PLAYERS: "1"
+      AC_AUTO_BALANCE_MIN_PLAYERS_HEROIC: "1"
+      AC_AUTO_BALANCE_MIN_PLAYERS_RAID: "1"
+      AC_AUTO_BALANCE_MIN_PLAYERS_RAID_HEROIC: "1"
+      AC_AUTO_BALANCE_STAT_MODIFIER_RAID_HEALTH: "0.55"
+      AC_AUTO_BALANCE_STAT_MODIFIER_RAID_DAMAGE: "0.35"
+      AC_AUTO_BALANCE_STAT_MODIFIER_RAID_BOSS_HEALTH: "0.55"
+      AC_AUTO_BALANCE_STAT_MODIFIER_RAID_BOSS_DAMAGE: "0.30"
+      AC_AUTO_BALANCE_STAT_MODIFIER_RAID_HEROIC_HEALTH: "0.50"
+      AC_AUTO_BALANCE_STAT_MODIFIER_RAID_HEROIC_DAMAGE: "0.30"
+      AC_AUTO_BALANCE_STAT_MODIFIER_RAID_HEROIC_BOSS_HEALTH: "0.50"
+      AC_AUTO_BALANCE_STAT_MODIFIER_RAID_HEROIC_BOSS_DAMAGE: "0.25"
+      AC_AUTO_BALANCE_PLAYER_CHANGE_NOTIFY: "1"
       AC_LOGIN_DATABASE_INFO: "ac-database;3306;root;${DOCKER_DB_ROOT_PASSWORD};acore_auth"
       AC_WORLD_DATABASE_INFO: "ac-database;3306;root;${DOCKER_DB_ROOT_PASSWORD};acore_world"
       AC_CHARACTER_DATABASE_INFO: "ac-database;3306;root;${DOCKER_DB_ROOT_PASSWORD};acore_characters"
       AC_CLOSE_IDLE_CONNECTIONS: "0"
     volumes:
       - ${DOCKER_VOL_CLIENT_DATA:-./volumes/client-data}:/azerothcore/env/dist/data:ro
+      - ./config/modules/mod_ahbot.conf:/azerothcore/env/dist/etc/modules/mod_ahbot.conf:ro
+      - ./config/modules/AutoBalance.conf:/azerothcore/env/dist/etc/modules/AutoBalance.conf:ro
     healthcheck:
       test: "bash -c '</dev/tcp/127.0.0.1/8085'"
       interval: 30s
@@ -122,3 +146,37 @@ services:
       start_period: 90s
     mem_limit: 3072m
     cpus: 1.5
+
+  woc-portal:
+    container_name: woc-portal
+    build: ./portal
+    restart: unless-stopped
+    networks:
+      - ac-network
+    depends_on:
+      ac-database:
+        condition: service_healthy
+    ports:
+      - "${PORTAL_EXTERNAL_PORT:-8090}:3000"
+    environment:
+      PORT: "3000"
+      DB_HOST: "ac-database"
+      DB_PORT: "3306"
+      DB_USER: "root"
+      DB_PASSWORD: "${DOCKER_DB_ROOT_PASSWORD}"
+      AUTH_DB: "acore_auth"
+      REALM_NAME: "Zwarteweg"
+      LAN_IP: "${LAN_IP:-127.0.0.1}"
+      WORLD_PORT: "${DOCKER_WORLD_EXTERNAL_PORT:-8085}"
+      AUTH_PORT: "${DOCKER_AUTH_EXTERNAL_PORT:-3724}"
+      DOWNLOAD_DIR: "/downloads"
+    volumes:
+      - ${PORTAL_DOWNLOADS_DIR:-./portal-downloads}:/downloads:ro
+    healthcheck:
+      test: "wget -qO- http://127.0.0.1:3000/health >/dev/null"
+      interval: 30s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+    mem_limit: 256m
+    cpus: 0.25
