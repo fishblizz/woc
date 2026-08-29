@@ -85,7 +85,7 @@ services:
 
   ac-worldserver:
     container_name: woc-ac-worldserver
-    image: ${DOCKER_WORLD_IMAGE:-acore/ac-wotlk-worldserver:${DOCKER_IMAGE_TAG:-master}}
+    image: ${DOCKER_WORLD_IMAGE}
     platform: ${DOCKER_WORLD_PLATFORM:-linux/amd64}
     restart: unless-stopped
     networks:

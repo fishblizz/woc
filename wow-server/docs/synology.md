@@ -116,6 +116,8 @@ cd /volume1/docker/woc
 
 Het deploy-script haalt `main` op uit Git, laat de lokale `.env` en runtime-data staan, valideert Docker Compose, en brengt database, client-data-init, database-import, authserver, worldserver en portal in volgorde terug online. Dit is belangrijk op Synology-installaties met het oudere `docker-compose`. De compose gebruikt bewust geen `cpus:` limieten, omdat sommige Synology-kernels die Docker-instelling niet ondersteunen.
 
+Laat `DOCKER_WORLD_IMAGE` in `.env` expliciet staan. Oudere Synology `docker-compose` versies verwerken geneste standaardwaarden in image-namen niet altijd goed.
+
 Status:
 
 ```sh
