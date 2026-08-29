@@ -119,6 +119,29 @@ Logs:
 docker compose logs -f
 ```
 
+Snelle diagnose als containers niet goed starten:
+
+```sh
+./scripts/diagnose-synology.sh
+```
+
+Let vooral op deze waarden:
+
+```text
+DOCKER_PLATFORM=linux/amd64
+DOCKER_WORLD_PLATFORM=linux/amd64
+```
+
+De DS218+ is x86-64. Gebruik daar geen `linux/arm64`; dan kan de worldserver-image verkeerd of helemaal niet starten.
+
+Als de worldserver-log blijft herhalen:
+
+```text
+cp: cannot create regular file '/azerothcore/env/dist/etc/modules/...conf.dist': Permission denied
+```
+
+Gebruik dan de nieuwste `compose.yaml` zonder losse read-only mounts onder `/azerothcore/env/dist/etc/modules`. De module-instellingen worden via container-omgeving gezet, zodat AzerothCore zelf zijn configuratiemap kan initialiseren.
+
 Stoppen:
 
 ```sh

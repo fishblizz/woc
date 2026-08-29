@@ -136,8 +136,6 @@ services:
       AC_CLOSE_IDLE_CONNECTIONS: "0"
     volumes:
       - ${DOCKER_VOL_CLIENT_DATA:-./volumes/client-data}:/azerothcore/env/dist/data:ro
-      - ./config/modules/mod_ahbot.conf:/azerothcore/env/dist/etc/modules/mod_ahbot.conf:ro
-      - ./config/modules/AutoBalance.conf:/azerothcore/env/dist/etc/modules/AutoBalance.conf:ro
     healthcheck:
       test: "bash -c '</dev/tcp/127.0.0.1/8085'"
       interval: 30s
