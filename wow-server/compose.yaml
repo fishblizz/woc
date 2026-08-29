@@ -1,4 +1,4 @@
-name: ${COMPOSE_PROJECT_NAME:-woc-wow}
+version: "2.4"
 
 networks:
   ac-network:
@@ -45,7 +45,7 @@ services:
       ac-database:
         condition: service_healthy
       ac-client-data-init:
-        condition: service_completed_successfully
+        condition: service_started
     environment:
       AC_DISABLE_INTERACTIVE: "1"
       AC_DATA_DIR: "/azerothcore/env/dist/data"
@@ -71,7 +71,7 @@ services:
       ac-database:
         condition: service_healthy
       ac-db-import:
-        condition: service_completed_successfully
+        condition: service_started
     ports:
       - "${DOCKER_AUTH_EXTERNAL_PORT:-3724}:3724"
     environment:
@@ -100,9 +100,9 @@ services:
       ac-database:
         condition: service_healthy
       ac-client-data-init:
-        condition: service_completed_successfully
+        condition: service_started
       ac-db-import:
-        condition: service_completed_successfully
+        condition: service_started
     ports:
       - "${DOCKER_WORLD_EXTERNAL_PORT:-8085}:8085"
     environment:

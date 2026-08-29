@@ -107,6 +107,15 @@ docker compose up -d
 
 De eerste start kan lang duren, omdat database-import en server-data-initialisatie eerst klaar moeten zijn.
 
+Na updates kun je vanaf de project-root deployen:
+
+```sh
+cd /volume1/docker/woc
+./deploy.sh
+```
+
+Het deploy-script haalt `main` op uit Git, laat de lokale `.env` en runtime-data staan, valideert Docker Compose, en brengt database, client-data-init, database-import, authserver, worldserver en portal in volgorde terug online. Dit is belangrijk op Synology-installaties met het oudere `docker-compose`.
+
 Status:
 
 ```sh
