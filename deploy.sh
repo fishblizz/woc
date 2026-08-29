@@ -69,8 +69,8 @@ else
   yellow "Pull laatste versie"
   git remote set-url origin "$REPO_URL"
   git fetch origin "$BRANCH"
-  git checkout "$BRANCH"
-  git pull --ff-only origin "$BRANCH"
+  git checkout -B "$BRANCH"
+  git reset --hard "origin/$BRANCH"
 fi
 
 cd "$WOW_DIR"
