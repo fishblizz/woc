@@ -101,15 +101,28 @@ dc up -d ac-database
 yellow "Wacht op database"
 attempt=0
 while :; do
-  health="$(docker_cli inspect -f '{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}' woc-ac-database 2>/dev/null || true)"
-  if [ "$health" = "healthy" ] || [ "$health" = "running" ]; then
+  db_container="$(dc ps -q ac-database 2>/dev/null || true)"
+  if [ -n "$db_container" ]; then
+    health="$(docker_cli inspect -f '{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}' "$db_container" 2>/dev/null || true)"
+  else
+    health=""
+  fi
+  if [ "$health" = "healthy" ]; then
     break
+  fi
+  if [ "$health" = "exited" ] || [ "$health" = "dead" ]; then
+    printf 'Database-container is gestopt. Bekijk logs met:\n' >&2
+    printf '  cd %s && sudo docker-compose -f docker-compose.yml logs --tail=120 ac-database\n' "$WOW_DIR" >&2
+    exit 1
   fi
   attempt=$((attempt + 1))
   if [ "$attempt" -ge 60 ]; then
-    printf 'Database wordt niet gezond. Bekijk logs met: sudo docker-compose logs ac-database\n' >&2
+    printf 'Database wordt niet gezond. Laatste bekende status: %s\n' "${health:-onbekend}" >&2
+    printf 'Bekijk logs met:\n' >&2
+    printf '  cd %s && sudo docker-compose -f docker-compose.yml logs --tail=120 ac-database\n' "$WOW_DIR" >&2
     exit 1
   fi
+  printf 'Database status: %s, nog even wachten...\n' "${health:-onbekend}"
   sleep 5
 done
 

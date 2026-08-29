@@ -125,6 +125,7 @@ docker compose ps
 Logs:
 
 ```sh
+cd /volume1/docker/woc/wow-server
 docker compose logs -f
 ```
 
