@@ -10,13 +10,13 @@ Open in je WoW-map:
 Data/realmlist.wtf
 ```
 
-Zet de eerste regel op het LAN-IP van je Synology:
+Zet de eerste regel op de publieke realm-host:
 
 ```text
-set realmlist 192.168.x.x
+set realmlist woc.dev.fjildsoftware.nl
 ```
 
-Gebruik hetzelfde IP-adres als `LAN_IP` in `wow-server/.env` en in de database-realmlist.
+Gebruik dezelfde hostnaam als `PUBLIC_HOST` in `wow-server/.env` en in de database-realmlist.
 
 Start de client bij voorkeur direct via `Wow.exe`, niet via een launcher die patchservers probeert te gebruiken.
 

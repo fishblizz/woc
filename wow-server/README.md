@@ -38,7 +38,9 @@ cp .env.example .env
 Pas `.env` aan:
 
 ```text
-LAN_IP=192.168.x.x
+LAN_IP=192.168.178.152
+PUBLIC_HOST=woc.dev.fjildsoftware.nl
+PORTAL_PUBLIC_URL=https://woc.dev.fjildsoftware.nl
 DOCKER_DB_ROOT_PASSWORD=een-lang-willekeurig-wachtwoord
 DOCKER_PLATFORM=linux/amd64
 DOCKER_WORLD_IMAGE=acore/ac-wotlk-worldserver:ahbot-autobalance
@@ -66,10 +68,16 @@ Logs:
 docker compose logs -f
 ```
 
-Portal:
+Portal lokaal op de Synology:
 
 ```text
 http://<LAN_IP>:8090
+```
+
+Portal extern via Synology Reverse Proxy:
+
+```text
+https://woc.dev.fjildsoftware.nl
 ```
 
 Stop:
@@ -80,7 +88,7 @@ docker compose down
 
 ## Na eerste import
 
-Zet het realm-adres naar het LAN-IP:
+Zet het realm-adres naar `PUBLIC_HOST` en het interne adres naar `LAN_IP`:
 
 ```sh
 ./scripts/set-realmlist-db.sh
@@ -117,18 +125,24 @@ Detach veilig met `Ctrl+p`, daarna `Ctrl+q`.
 - `scripts/logs.sh`: volg logs
 - `scripts/console.sh`: worldserver console openen
 - `scripts/create-account.sh`: toont accountcommando's en opent console
-- `scripts/set-realmlist-db.sh`: zet realm-adres naar `LAN_IP`
+- `scripts/set-realmlist-db.sh`: zet realm-adres naar `PUBLIC_HOST` en intern adres naar `LAN_IP`
 - `scripts/backup.sh`: database backup
 - `scripts/restore.sh`: database restore
 - `scripts/full-backup.sh`: database plus config backup
 
-## LAN-only poorten
+## Poorten
 
-Open alleen op LAN:
+Voor LAN-only:
 
 - TCP `3724`: authserver
 - TCP `8085`: worldserver
 - TCP `8090`: World of Cees portal
+
+Voor externe toegang:
+
+- TCP `443`: Synology Reverse Proxy naar portal `8090`
+- TCP `3724`: authserver
+- TCP `8085`: worldserver
 
 Niet publiceren in fase 1:
 
@@ -139,5 +153,6 @@ Niet publiceren in fase 1:
 
 - [docs/research.md](docs/research.md)
 - [docs/synology.md](docs/synology.md)
+- [docs/external-access.md](docs/external-access.md)
 - [docs/client.md](docs/client.md)
 - [docs/playerbots.md](docs/playerbots.md)

@@ -10,7 +10,7 @@ docker compose version
 echo
 echo "== Platform settings =="
 if [ -f .env ]; then
-  grep -E '^(DOCKER_PLATFORM|DOCKER_WORLD_PLATFORM|DOCKER_WORLD_IMAGE|LAN_IP)=' .env || true
+  grep -E '^(DOCKER_PLATFORM|DOCKER_WORLD_PLATFORM|DOCKER_WORLD_IMAGE|LAN_IP|PUBLIC_HOST|PORTAL_PUBLIC_URL)=' .env || true
 else
   echo "Missing .env. Copy .env.example to .env first."
 fi

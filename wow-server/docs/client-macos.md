@@ -13,8 +13,8 @@ clientdownloads gezocht, gedownload of gedistribueerd.
 - Mislukt installerpad: `/Users/ceesvisser/WOC/wow-client-3.3.5a`
 - Geldige clientmap: `/Users/ceesvisser/WOC/wow-client-335a`
 - Sikarugir wrapper: `/Users/ceesvisser/Applications/Sikarugir/WoW-335a-Installer.app`
-- AzerothCore authserver: `192.168.178.129:3724`
-- AzerothCore worldserver: `192.168.178.129:8085`
+- AzerothCore authserver: `woc.dev.fjildsoftware.nl:3724`
+- AzerothCore worldserver: `woc.dev.fjildsoftware.nl:8085`
 - Testaccount: `CEES`
 - Serverconfiguratie is niet gewijzigd tijdens deze clientvalidatie.
 
@@ -127,14 +127,14 @@ Originele backup:
 Nieuwe inhoud:
 
 ```text
-SET realmlist "192.168.178.129"
+SET realmlist "woc.dev.fjildsoftware.nl"
 ```
 
 Servercontrole:
 
 - `ac-authserver`: healthy, hostpoort `3724`
 - `ac-worldserver`: healthy, hostpoort `8085`
-- Realm `AzerothCore`: `192.168.178.129:8085`
+- Realm `AzerothCore`: `woc.dev.fjildsoftware.nl:8085`
 
 ## Gratis Apple Silicon runtime
 

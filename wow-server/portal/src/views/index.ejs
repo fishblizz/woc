@@ -12,7 +12,7 @@
         <div class="hero-copy">
           <p class="kicker">Private AzerothCore Realm</p>
           <h1>World of Cees</h1>
-          <p class="realm-line"><%= REALM_NAME %> draait intern op <strong><%= LAN_IP %>:<%= WORLD_PORT %></strong></p>
+          <p class="realm-line"><%= REALM_NAME %> draait op <strong><%= PUBLIC_HOST %>:<%= WORLD_PORT %></strong></p>
         </div>
         <div class="status-runes" aria-label="Realm status">
           <div>
@@ -79,7 +79,17 @@
           </div>
           <div class="connection">
             <span>Realmlist</span>
-            <code>set realmlist <%= LAN_IP %></code>
+            <code>set realmlist <%= PUBLIC_HOST %></code>
+          </div>
+          <% if (PORTAL_PUBLIC_URL) { %>
+            <div class="connection">
+              <span>Portal</span>
+              <code><%= PORTAL_PUBLIC_URL %></code>
+            </div>
+          <% } %>
+          <div class="connection">
+            <span>Intern adres</span>
+            <code><%= LAN_IP %>:<%= WORLD_PORT %></code>
           </div>
         </article>
 

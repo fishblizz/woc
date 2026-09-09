@@ -64,7 +64,9 @@ cp .env.example .env
 Pas minimaal aan:
 
 ```sh
-LAN_IP=192.168.x.x
+LAN_IP=192.168.178.152
+PUBLIC_HOST=woc.dev.fjildsoftware.nl
+PORTAL_PUBLIC_URL=https://woc.dev.fjildsoftware.nl
 DOCKER_DB_ROOT_PASSWORD=een-lang-willekeurig-wachtwoord
 DOCKER_PLATFORM=linux/amd64
 DOCKER_WORLD_PLATFORM=linux/amd64
@@ -184,7 +186,7 @@ Na de eerste database-import:
 ./scripts/set-realmlist-db.sh
 ```
 
-Dit zet `acore_auth.realmlist.address` op de `LAN_IP` uit `.env`.
+Dit zet `acore_auth.realmlist.address` op `PUBLIC_HOST` uit `.env`, en `localAddress` op de `LAN_IP`.
 
 ## 9. Account maken
 
@@ -239,22 +241,37 @@ Als je Container Manager Project gebruikt:
 
 ## 11. Firewall-poorten
 
-LAN-only openzetten op de Synology firewall:
+Openzetten op de Synology firewall:
 
 - TCP `3724`
 - TCP `8085`
 - TCP `8090`
+- TCP `443`, als de Synology Reverse Proxy HTTPS voor de portal afhandelt
 
 Niet openzetten:
 
 - TCP `3306`
 - TCP `7878`
 
-Zet geen router port-forwarding aan voor fase 1.
+Zet voor LAN-only geen router port-forwarding aan.
 
 ## 12. Internettoegang later
 
-Voor toegang vanaf internet zijn minimaal router port-forwards voor TCP `3724` en `8085` nodig en moet de database-realmlist naar publiek IP of DNS wijzen. Dat is bewust niet de eerste versie. Gebruik sterke wachtwoorden en overweeg liever VPN naar je LAN.
+Voor toegang vanaf internet zijn minimaal router port-forwards voor TCP `3724` en `8085` nodig en moet de database-realmlist naar publiek IP of DNS wijzen. Voor de portal gebruik je bij voorkeur Synology Reverse Proxy:
+
+```text
+https://woc.dev.fjildsoftware.nl:443 -> http://127.0.0.1:8090
+```
+
+Forward op de router:
+
+```text
+TCP 443  -> 192.168.178.152:443
+TCP 3724 -> 192.168.178.152:3724
+TCP 8085 -> 192.168.178.152:8085
+```
+
+Forward niet direct naar `8090` als reverse proxy werkt. Gebruik sterke wachtwoorden en overweeg liever VPN naar je LAN.
 
 ## 13. Backups
 

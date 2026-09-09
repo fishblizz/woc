@@ -29,6 +29,8 @@ app.use(express.static(path.join(process.cwd(), "public"), {
 
 const REALM_NAME = process.env.REALM_NAME || "Zwarteweg";
 const LAN_IP = process.env.LAN_IP || "127.0.0.1";
+const PUBLIC_HOST = process.env.PUBLIC_HOST || LAN_IP;
+const PORTAL_PUBLIC_URL = process.env.PORTAL_PUBLIC_URL || "";
 const WORLD_PORT = process.env.WORLD_PORT || "8085";
 const AUTH_PORT = process.env.AUTH_PORT || "3724";
 
@@ -147,7 +149,7 @@ app.get("/", async (req, res) => {
   const flash = req.query.created ? "Account aangemaakt. Je kunt nu inloggen." : "";
   try {
     const [status, downloads] = await Promise.all([getStatus(), listDownloads()]);
-    res.render("index", { status, downloads, flash, error: "", formatBytes, REALM_NAME, LAN_IP, WORLD_PORT, AUTH_PORT });
+    res.render("index", { status, downloads, flash, error: "", formatBytes, REALM_NAME, LAN_IP, PUBLIC_HOST, PORTAL_PUBLIC_URL, WORLD_PORT, AUTH_PORT });
   } catch (error) {
     res.status(503).render("index", {
       status: { realms: [], accountCount: 0, characterCount: 0, auctionCount: 0 },
@@ -157,6 +159,8 @@ app.get("/", async (req, res) => {
       formatBytes,
       REALM_NAME,
       LAN_IP,
+      PUBLIC_HOST,
+      PORTAL_PUBLIC_URL,
       WORLD_PORT,
       AUTH_PORT
     });
@@ -169,7 +173,7 @@ app.post("/accounts", async (req, res) => {
     input = normalizeAccountInput(req.body.username, req.body.password, req.body.email);
   } catch (error) {
     const [status, downloads] = await Promise.all([getStatus().catch(() => ({ realms: [], accountCount: 0, characterCount: 0, auctionCount: 0 })), listDownloads()]);
-    return res.status(400).render("index", { status, downloads, flash: "", error: error.message, formatBytes, REALM_NAME, LAN_IP, WORLD_PORT, AUTH_PORT });
+    return res.status(400).render("index", { status, downloads, flash: "", error: error.message, formatBytes, REALM_NAME, LAN_IP, PUBLIC_HOST, PORTAL_PUBLIC_URL, WORLD_PORT, AUTH_PORT });
   }
 
   const connection = await db.getConnection();
@@ -191,7 +195,7 @@ app.post("/accounts", async (req, res) => {
   } catch (error) {
     await connection.rollback().catch(() => {});
     const [status, downloads] = await Promise.all([getStatus().catch(() => ({ realms: [], accountCount: 0, characterCount: 0, auctionCount: 0 })), listDownloads()]);
-    res.status(400).render("index", { status, downloads, flash: "", error: error.message, formatBytes, REALM_NAME, LAN_IP, WORLD_PORT, AUTH_PORT });
+    res.status(400).render("index", { status, downloads, flash: "", error: error.message, formatBytes, REALM_NAME, LAN_IP, PUBLIC_HOST, PORTAL_PUBLIC_URL, WORLD_PORT, AUTH_PORT });
   } finally {
     connection.release();
   }
