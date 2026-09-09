@@ -154,5 +154,6 @@ Niet publiceren in fase 1:
 - [docs/research.md](docs/research.md)
 - [docs/synology.md](docs/synology.md)
 - [docs/external-access.md](docs/external-access.md)
+- [docs/ahbot.md](docs/ahbot.md)
 - [docs/client.md](docs/client.md)
 - [docs/playerbots.md](docs/playerbots.md)
