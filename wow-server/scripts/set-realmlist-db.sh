@@ -20,7 +20,15 @@ fi
 REALM_ADDRESS="${PUBLIC_HOST:-$LAN_IP}"
 LOCAL_SUBNET_MASK="${LOCAL_SUBNET_MASK:-255.255.255.0}"
 
-docker compose exec -T ac-database sh -c \
+dc() {
+  if command -v docker-compose >/dev/null 2>&1; then
+    docker-compose -f docker-compose.yml "$@"
+  else
+    docker compose -f compose.yaml "$@"
+  fi
+}
+
+dc exec -T ac-database sh -c \
   "mysql -uroot -p\"\$MYSQL_ROOT_PASSWORD\" acore_auth" <<SQL
 UPDATE realmlist
 SET address='${REALM_ADDRESS}',
