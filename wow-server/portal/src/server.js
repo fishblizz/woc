@@ -33,6 +33,14 @@ const PUBLIC_HOST = process.env.PUBLIC_HOST || LAN_IP;
 const PORTAL_PUBLIC_URL = process.env.PORTAL_PUBLIC_URL || "";
 const WORLD_PORT = process.env.WORLD_PORT || "8085";
 const AUTH_PORT = process.env.AUTH_PORT || "3724";
+const EMPTY_STATUS = {
+  realms: [],
+  accountCount: 0,
+  characterCount: 0,
+  auctionCount: 0,
+  factionCounts: { alliance: 0, horde: 0 },
+  auctionHouseCounts: { alliance: 0, horde: 0, neutral: 0 }
+};
 
 function sha1(...chunks) {
   const hash = crypto.createHash("sha1");
@@ -107,13 +115,35 @@ async function getStatus() {
   const [characters] = await db.query(
     "SELECT COUNT(*) total FROM acore_characters.characters"
   );
+  const [factions] = await db.query(
+    `SELECT
+       SUM(CASE WHEN race IN (1, 3, 4, 7, 11) THEN 1 ELSE 0 END) alliance,
+       SUM(CASE WHEN race IN (2, 5, 6, 8, 10) THEN 1 ELSE 0 END) horde
+     FROM acore_characters.characters`
+  );
   const [auctions] = await db.query("SELECT COUNT(*) total FROM acore_characters.auctionhouse");
+  const [auctionHouses] = await db.query(
+    `SELECT
+       SUM(CASE WHEN houseid = 2 THEN 1 ELSE 0 END) alliance,
+       SUM(CASE WHEN houseid = 6 THEN 1 ELSE 0 END) horde,
+       SUM(CASE WHEN houseid = 7 THEN 1 ELSE 0 END) neutral
+     FROM acore_characters.auctionhouse`
+  );
 
   return {
     realms,
     accountCount: accounts[0]?.total || 0,
     characterCount: characters[0]?.total || 0,
-    auctionCount: auctions[0]?.total || 0
+    auctionCount: auctions[0]?.total || 0,
+    factionCounts: {
+      alliance: Number(factions[0]?.alliance || 0),
+      horde: Number(factions[0]?.horde || 0)
+    },
+    auctionHouseCounts: {
+      alliance: Number(auctionHouses[0]?.alliance || 0),
+      horde: Number(auctionHouses[0]?.horde || 0),
+      neutral: Number(auctionHouses[0]?.neutral || 0)
+    }
   };
 }
 
@@ -152,7 +182,7 @@ app.get("/", async (req, res) => {
     res.render("index", { status, downloads, flash, error: "", formatBytes, REALM_NAME, LAN_IP, PUBLIC_HOST, PORTAL_PUBLIC_URL, WORLD_PORT, AUTH_PORT });
   } catch (error) {
     res.status(503).render("index", {
-      status: { realms: [], accountCount: 0, characterCount: 0, auctionCount: 0 },
+      status: EMPTY_STATUS,
       downloads: [],
       flash: "",
       error: `Database nog niet klaar: ${error.message}`,
@@ -172,7 +202,7 @@ app.post("/accounts", async (req, res) => {
   try {
     input = normalizeAccountInput(req.body.username, req.body.password, req.body.email);
   } catch (error) {
-    const [status, downloads] = await Promise.all([getStatus().catch(() => ({ realms: [], accountCount: 0, characterCount: 0, auctionCount: 0 })), listDownloads()]);
+    const [status, downloads] = await Promise.all([getStatus().catch(() => EMPTY_STATUS), listDownloads()]);
     return res.status(400).render("index", { status, downloads, flash: "", error: error.message, formatBytes, REALM_NAME, LAN_IP, PUBLIC_HOST, PORTAL_PUBLIC_URL, WORLD_PORT, AUTH_PORT });
   }
 
@@ -194,7 +224,7 @@ app.post("/accounts", async (req, res) => {
     res.redirect("/?created=1");
   } catch (error) {
     await connection.rollback().catch(() => {});
-    const [status, downloads] = await Promise.all([getStatus().catch(() => ({ realms: [], accountCount: 0, characterCount: 0, auctionCount: 0 })), listDownloads()]);
+    const [status, downloads] = await Promise.all([getStatus().catch(() => EMPTY_STATUS), listDownloads()]);
     res.status(400).render("index", { status, downloads, flash: "", error: error.message, formatBytes, REALM_NAME, LAN_IP, PUBLIC_HOST, PORTAL_PUBLIC_URL, WORLD_PORT, AUTH_PORT });
   } finally {
     connection.release();

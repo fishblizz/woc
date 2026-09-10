@@ -24,6 +24,14 @@
             <strong><%= status.characterCount %></strong>
           </div>
           <div>
+            <span>Alliance</span>
+            <strong><%= status.factionCounts.alliance %></strong>
+          </div>
+          <div>
+            <span>Horde</span>
+            <strong><%= status.factionCounts.horde %></strong>
+          </div>
+          <div>
             <span>AH</span>
             <strong><%= status.auctionCount %></strong>
           </div>
@@ -120,6 +128,12 @@
           <div class="module-grid">
             <span>AHBot</span>
             <strong>Auction House gevuld</strong>
+            <span>Alliance AH</span>
+            <strong><%= status.auctionHouseCounts.alliance %> auctions</strong>
+            <span>Horde AH</span>
+            <strong><%= status.auctionHouseCounts.horde %> auctions</strong>
+            <span>Neutral AH</span>
+            <strong><%= status.auctionHouseCounts.neutral %> auctions</strong>
             <span>AutoBalance</span>
             <strong>Solo raids schalen mee</strong>
             <span>Realm type</span>

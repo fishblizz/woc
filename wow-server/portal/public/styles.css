@@ -80,7 +80,7 @@ h1 {
 
 .status-runes {
   display: grid;
-  grid-template-columns: repeat(3, 92px);
+  grid-template-columns: repeat(5, 92px);
   gap: 10px;
   flex: 0 0 auto;
 }
@@ -297,7 +297,7 @@ a:hover {
   }
 
   .status-runes {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .grid {
