@@ -157,6 +157,7 @@ services:
       AC_CHARACTER_DATABASE_INFO: "ac-database;3306;root;${DOCKER_DB_ROOT_PASSWORD};acore_characters"
       AC_CLOSE_IDLE_CONNECTIONS: "0"
       AC_DEBUG_LFG: "1"
+      AC_DEBUG_BATTLEGROUND: "1"
     volumes:
       - ${DOCKER_VOL_CLIENT_DATA:-./volumes/client-data}:/azerothcore/env/dist/data:ro
     healthcheck:
